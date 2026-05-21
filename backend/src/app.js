@@ -24,11 +24,24 @@ export function buildApp() {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }));
 
+  // CORS — `CLIENT_URL` is a comma-separated allow-list. Entries may be:
+  //   - an exact origin (https://interprep.vercel.app)
+  //   - a wildcard pattern (https://*.vercel.app)  — useful for Vercel preview deploys
+  //   - "*" — open to any origin (DEV ONLY, never in prod)
   const allowed = getAllowedOrigins();
+  const matchOrigin = (origin) => {
+    if (!origin) return true;          // curl / same-origin
+    if (allowed.includes('*')) return true;
+    if (allowed.includes(origin)) return true;
+    return allowed.some((pat) => {
+      if (!pat.includes('*')) return false;
+      const re = new RegExp('^' + pat.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
+      return re.test(origin);
+    });
+  };
   app.use(cors({
     origin(origin, cb) {
-      // Allow same-origin / curl (no Origin header) and any allow-listed origin.
-      if (!origin || allowed.includes(origin) || allowed.includes('*')) return cb(null, true);
+      if (matchOrigin(origin)) return cb(null, true);
       return cb(new Error(`CORS blocked: ${origin}`));
     },
     credentials: true,

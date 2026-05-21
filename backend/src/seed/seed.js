@@ -10,9 +10,25 @@
  */
 import mongoose from 'mongoose';
 import { connectDB, disconnectDB } from '../config/db.js';
+import User from '../models/User.js';
 import Domain from '../models/Domain.js';
 import Question from '../models/Question.js';
+import Interview from '../models/Interview.js';
 import { DOMAINS, QUESTIONS } from './seedData.js';
+
+/**
+ * Explicitly build every collection index defined in the schemas. In
+ * production we run with autoIndex disabled (for performance), so seed
+ * time is when we materialize indexes on Atlas.
+ */
+async function syncAllIndexes() {
+  await Promise.all([
+    User.syncIndexes(),
+    Domain.syncIndexes(),
+    Question.syncIndexes(),
+    Interview.syncIndexes(),
+  ]);
+}
 
 async function seedDomains() {
   const writes = DOMAINS.map((d) => ({
@@ -53,6 +69,8 @@ async function main() {
   console.log(`[seed] starting (fresh=${fresh})`);
 
   await connectDB();
+  await syncAllIndexes();
+  console.log('[seed] indexes synced');
   const d = await seedDomains();
   console.log(`[seed] domains: ${d.upsertedCount} new, ${d.modifiedCount} updated, ${d.matchedCount} matched`);
   const q = await seedQuestions(fresh);

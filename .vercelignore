@@ -1,0 +1,6 @@
+# The frontend is the only thing Vercel deploys; the backend lives on Render.
+# Keeping these out of the Vercel build saves ~30s and a few MB.
+backend
+render.yaml
+.git
+*.log
