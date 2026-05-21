@@ -1,0 +1,44 @@
+{
+  "name": "interprep",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "InterPrep — Domain-Specific Interview Simulator. MERN-stack AI interview platform with JWT auth, MongoDB session history, admin dashboard, and a Claude-powered evaluator.",
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n web,api -c blue,magenta \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "vite",
+    "dev:api": "npm --prefix backend run dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start:api": "npm --prefix backend start",
+    "seed": "npm --prefix backend run seed",
+    "seed:admin": "npm --prefix backend run seed:admin",
+    "install:all": "npm install && npm --prefix backend install"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.13.3",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}

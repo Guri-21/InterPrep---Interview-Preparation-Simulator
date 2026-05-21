@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base layer ────────────────────────────────────────────────── */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    font-feature-settings: 'cv11', 'ss03', 'ss01';
+    background:
+      radial-gradient(ellipse 100% 60% at 50% -10%, rgba(91, 84, 255, 0.10), transparent 60%),
+      radial-gradient(ellipse 80% 40% at 100% 30%, rgba(34, 211, 238, 0.06), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 0% 80%, rgba(167, 139, 250, 0.06), transparent 60%),
+      #070708;
+    background-attachment: fixed;
+  }
+
+  /* Smooth focus rings on all interactive controls. */
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.400');
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Premium scrollbar (WebKit). */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.ink.700');
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: theme('colors.ink.600'); background-clip: padding-box; }
+
+  /* Disable iOS-style tap highlight. */
+  * { -webkit-tap-highlight-color: transparent; }
+}
+
+/* ─── Component utilities ───────────────────────────────────────── */
+@layer components {
+  /* Glass surface — the workhorse card surface. */
+  .glass {
+    @apply bg-ink-900/60 backdrop-blur-xl border border-white/[0.06] shadow-card;
+  }
+
+  .glass-strong {
+    @apply bg-ink-900/80 backdrop-blur-2xl border border-white/[0.08] shadow-card;
+  }
+
+  .glass-subtle {
+    @apply bg-white/[0.02] border border-white/[0.05];
+  }
+
+  /* Hairline divider used between sections. */
+  .hairline { @apply border-t border-white/[0.06]; }
+
+  /* Premium gradient text — used for hero numerals and accent labels. */
+  .text-gradient {
+    background: linear-gradient(135deg, #c4c4cc 0%, #ffffff 50%, #b6bdff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #8a93ff 0%, #c4a8ff 50%, #5ee2ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Soft chip — used in tag clusters. */
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+           text-[11px] font-medium tracking-wide
+           bg-white/[0.04] border border-white/[0.06] text-ink-200;
+  }
+
+  /* Aurora backdrop — animated colored haze behind hero sections. */
+  .aurora-bg {
+    position: absolute;
+    inset: -10%;
+    background: theme('backgroundImage.aurora');
+    filter: blur(60px);
+    opacity: 0.7;
+    animation: aurora 22s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Faint grid backdrop. */
+  .grid-bg {
+    background-image: theme('backgroundImage.grid-faint');
+    background-size: 28px 28px;
+  }
+
+  /* Skeleton shimmer block. */
+  .skeleton {
+    background:
+      linear-gradient(90deg,
+        rgba(255,255,255,0.03) 0%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.03) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2.4s linear infinite;
+    border-radius: 8px;
+  }
+
+  /* Keyboard chip — used to hint shortcuts. */
+  .kbd {
+    @apply inline-flex items-center justify-center min-w-[20px] px-1.5 h-[20px]
+           rounded-md text-[10.5px] font-medium font-mono
+           bg-white/[0.06] border border-white/[0.08] text-ink-200;
+  }
+
+  /* Sleek thin progress bar. */
+  .progress-track {
+    @apply h-1 w-full rounded-full bg-white/[0.06] overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full rounded-full bg-gradient-to-r from-brand-500 via-brand-400 to-cyan-400;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* ─── Waveform animation (used in Interview live recording UI) ────── */
+@keyframes wave-pulse {
+  0%, 100% { transform: scaleY(0.25); opacity: 0.4; }
+  50%      { transform: scaleY(1);    opacity: 1;   }
+}
+
+.waveform-bar {
+  width: 3px;
+  height: var(--h, 30px);
+  background: linear-gradient(180deg, theme('colors.brand.400'), theme('colors.cyan.400'));
+  border-radius: 999px;
+  transform-origin: center;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+.waveform-bar.active {
+  animation: wave-pulse var(--d, 0.5s) ease-in-out infinite;
+}
