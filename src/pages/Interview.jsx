@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, Mic, Square, Sparkles, RotateCcw,
@@ -29,6 +29,7 @@ export default function Interview() {
   const { domainId } = useParams();
   const [search] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const { reload: reloadSessions } = useSessions();
 
@@ -43,7 +44,26 @@ export default function Interview() {
     [domainId, difficultyFilter],
   );
 
-  const [qIndex, setQIndex] = useState(0);
+  const [qIndex, setQIndex] = useState(() => {
+    if (!allQuestions || allQuestions.length === 0) return 0;
+    
+    const state = location.state;
+    if (state?.specificQuestion) {
+      const idx = allQuestions.findIndex(q => q.question === state.specificQuestion);
+      if (idx !== -1) return idx;
+    }
+    
+    // Pick a random question by default so it varies per session
+    let nextIdx = Math.floor(Math.random() * allQuestions.length);
+    
+    // If we're coming from the results page and skipped a question, ensure we don't repeat it
+    if (state?.skipQuestion && allQuestions.length > 1) {
+      while (allQuestions[nextIdx].question === state.skipQuestion) {
+        nextIdx = Math.floor(Math.random() * allQuestions.length);
+      }
+    }
+    return nextIdx;
+  });
   const [step, setStep] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [typedAnswer, setTypedAnswer] = useState('');

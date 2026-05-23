@@ -131,8 +131,12 @@ export default function Results() {
           <span className="text-[12px] text-ink-400">{session.topic} · {session.difficulty}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Link to={`/interview/${domainId}`}><Button variant="ghost" size="sm" leftIcon={<RotateCcw className="w-3.5 h-3.5" />}>Retry domain</Button></Link>
-          <Link to={`/interview/${domainId}`}><Button variant="brand" size="sm" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>Next question</Button></Link>
+          <Link to={`/interview/${domainId}`} state={{ specificQuestion: session.question }}>
+            <Button variant="ghost" size="sm" leftIcon={<RotateCcw className="w-3.5 h-3.5" />}>Retry question</Button>
+          </Link>
+          <Link to={`/interview/${domainId}`} state={{ skipQuestion: session.question }}>
+            <Button variant="brand" size="sm" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>Next question</Button>
+          </Link>
         </div>
       </div>
 

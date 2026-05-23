@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
+import mongoSanitize from 'express-mongo-sanitize';
 
 import { env, getAllowedOrigins } from './config/env.js';
 import routes from './routes/index.js';
@@ -50,6 +51,7 @@ export function buildApp() {
   app.use(compression());
   app.use(express.json({ limit: '256kb' }));
   app.use(express.urlencoded({ extended: true, limit: '256kb' }));
+  app.use(mongoSanitize()); // Strip $ and . from req.body/query/params to prevent NoSQL injection
 
   if (!env.isProd) app.use(morgan('dev'));
   else app.use(morgan('combined'));
