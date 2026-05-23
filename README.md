@@ -122,4 +122,3 @@ The system successfully identifies common interview anti-patterns, such as:
 
 ---
 
-*Developed for the Integrated Engineering Project (22CS038).*
