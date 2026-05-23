@@ -2,6 +2,10 @@
 
 **InterPrep AI** is a full-stack, AI-driven technical interview simulation platform designed to provide accessible, high-quality interview practice with real-time, granular feedback.
 
+## 🚀 Live Demo
+**[Launch InterPrep AI (Live on Vercel)](https://inter-prep-interview-preparation-si.vercel.app)**
+*Backend API hosted on Render.*
+
 ---
 
 ## 🎯 Aim & Problem Statement
@@ -79,21 +83,25 @@ GEMINI_MODEL=gemini-2.5-flash
 JWT_SECRET=your_super_secret_jwt_key
 \`\`\`
 Seed the database with an admin user:
-\`\`\`bash
+```bash
 npm run seed:admin
-\`\`\`
+```
 
 ### 2. Frontend Setup
 In the project root directory:
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
+If you are running the backend on a different port or in the cloud, create a `.env` file in the root directory:
+```env
+VITE_API_BASE_URL=http://localhost:4000
+```
 
 ### 3. Run the Application
 Start both the frontend and backend concurrently from the root directory:
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 * The frontend will be available at `http://localhost:3000`
 * The backend API will be running on `http://localhost:4000`
 
@@ -118,7 +126,6 @@ The system successfully identifies common interview anti-patterns, such as:
 1. **Video Emotion Analysis:** Integrating OpenCV or browser-based AI models to track eye contact, facial expressions, and posture during the interview.
 2. **Mock Interview Playlists:** Sequential, multi-question interviews mimicking a full 45-minute technical screen.
 3. **Peer-to-Peer Mode:** Allowing users to match with other candidates for human-led mock interviews on the platform.
-4. **Cloud Deployment:** Containerizing the architecture with Docker and deploying to AWS/Vercel for public access.
 
 ---
 
