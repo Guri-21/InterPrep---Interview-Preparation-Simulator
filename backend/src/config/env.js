@@ -6,17 +6,33 @@ import 'dotenv/config';
  * from here so that missing-required-var checks fail loud at boot time.
  */
 
+/**
+ * Strip leading/trailing whitespace AND wrapping quotes that often sneak in
+ * when pasting secrets into a hosting dashboard (e.g. Render, Vercel).
+ *   "mongodb+srv://..."  →  mongodb+srv://...
+ *   'mongodb+srv://...'  →  mongodb+srv://...
+ *   `\n  mongodb+srv://...  \n`  →  mongodb+srv://...
+ */
+function clean(v) {
+  if (v == null) return v;
+  let s = String(v).trim();
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
+}
+
 function required(name) {
-  const v = process.env[name];
-  if (!v || !String(v).trim()) {
+  const v = clean(process.env[name]);
+  if (!v) {
     throw new Error(`[env] Missing required environment variable: ${name}`);
   }
   return v;
 }
 
 function optional(name, fallback) {
-  const v = process.env[name];
-  return v && String(v).trim() ? v : fallback;
+  const v = clean(process.env[name]);
+  return v || fallback;
 }
 
 function intOpt(name, fallback) {
@@ -28,12 +44,27 @@ function intOpt(name, fallback) {
 const NODE_ENV = optional('NODE_ENV', 'development');
 const isProd = NODE_ENV === 'production';
 
+function validateMongoUri(uri) {
+  if (!/^mongodb(\+srv)?:\/\//.test(uri)) {
+    const preview = uri.length > 24 ? `${uri.slice(0, 12)}…${uri.slice(-8)}` : uri;
+    throw new Error(
+      `[env] MONGO_URI is malformed (got "${preview}"). ` +
+      `It must start with "mongodb://" or "mongodb+srv://". ` +
+      `Common causes: (1) you pasted the literal placeholder "<password>" ` +
+      `instead of the real password, (2) the scheme prefix got dropped during ` +
+      `copy-paste, or (3) the value has stray characters. ` +
+      `Expected shape: mongodb+srv://USER:PASS@cluster.xxxxx.mongodb.net/interprep?retryWrites=true&w=majority`
+    );
+  }
+  return uri;
+}
+
 export const env = {
   NODE_ENV,
   isProd,
 
   PORT: intOpt('PORT', 4000),
-  MONGO_URI: required('MONGO_URI'),
+  MONGO_URI: validateMongoUri(required('MONGO_URI')),
   JWT_SECRET: required('JWT_SECRET'),
   JWT_EXPIRE: optional('JWT_EXPIRE', '7d'),
   BCRYPT_ROUNDS: intOpt('BCRYPT_ROUNDS', 10),
